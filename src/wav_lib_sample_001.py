@@ -1,6 +1,10 @@
 #http://docs.python.jp/2/library/wave.html
 
 import wave
+import math
+import numpy
+import pylab
+from scipy import fromstring, int16
 
 #使用するwavファイル
 wavFile = "../wav/sample.wav"
@@ -34,9 +38,29 @@ wr.rewind()
 #現在のファイルポインタの位置を返す
 currentFrame = wr.tell()
 #読み取りたい位置までのポインタ数
-endFrame = 30
+endFrame = 30000
 #オーディオフレームの値を読み込んで、バイトごとに文字に変換した文字列を取得
-print(currentFrame,"から",endFrame,"までのフレーム\n",wr.readframes(endFrame))
+#print(currentFrame,"から",endFrame,"までのフレーム\n",wr.readframes(endFrame))
+
+#ポインタ数まで読み込み
+data = wr.readframes(wr.getnframes())
+#文字列から数値への変換
+num_data = fromstring(data,dtype = int16)
+
+#チャネル数が2→ステレオ
+#数値列は左右左右・・・で入っている
+if (wr.getnchannels() == 2):
+    # 左チャンネルの抽出
+    left = num_data[::2]
+    left_abs = abs(num_data[::2])	#絶対値を取ったもの
+    # 右チャンネル
+    right = num_data[1::2]
+    right_abs = abs(num_data[1::2])	#絶対値を取ったもの
+
+#デバッグ
+print("左チャネル : ",left)
+print("右チャネル : ",right)
+
 
 #WaveReadインスタンスを使用不可にする
 wr.close()
