@@ -61,6 +61,24 @@ if (wr.getnchannels() == 2):
 print("左チャネル : ",left)
 print("右チャネル : ",right)
 
+#参考 : http://kiito.hatenablog.com/entry/2013/12/08/211908
+def plot_waveform ( waveform , sampling_rate ):
+    sampling_interval = 1.0 / sampling_rate
+    times = numpy.arange ( len ( waveform )) * sampling_interval
+    pylab.plot ( times , waveform ) # pair of two x - and y - coordinate lists / arrays
+    pylab.title ( ' Waveform ' )
+    pylab.xlabel ( ' Time [ sec ] ' )
+    pylab.ylabel ( ' Amplitude ' )
+    pylab.xlim ([0 , len ( waveform ) * sampling_interval ])
+    pylab.ylim ([ -1 , 1])
+    pylab.show ()
+
+#プロット
+left = left / 32768.0
+plot_waveform(left, wr.getframerate())
+
+left2 = left_abs / 32768.0
+plot_waveform(left2, wr.getframerate())
 
 #WaveReadインスタンスを使用不可にする
 wr.close()
