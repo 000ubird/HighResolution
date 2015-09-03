@@ -1,5 +1,3 @@
-from libs.test.test import test
-from libs.test.test import test2
+from libs.fft.fft import fft
 
-test("test")
-test2("test")
+fft("sample.wav")

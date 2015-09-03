@@ -44,3 +44,5 @@ def fft(fileName) :
     ylabel("phase spectrum")
     
     show()
+    
+    print("complete")
