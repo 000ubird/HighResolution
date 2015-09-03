@@ -6,7 +6,12 @@ from pylab import *
 def fft(fileName) : 
     print("Reading "+fileName)
     
-    wf = wave.open(fileName, "r")
+    try :
+        wf = wave.open(fileName, "r")
+    except FileNotFoundError :
+        print ("ファイル "+fileName+" が見つかりません")
+        exit()
+        
     fs = wf.getframerate()  #サンプリング周波数
     data = wf.readframes(wf.getnframes())
     data = frombuffer(data, dtype="int16") / 32768.0
