@@ -34,6 +34,15 @@ def createSineWave(amp, frq, fs, bit_depth, length) :
     
     return data
 
+def save(data, fs, bit, filename):
+    """波形データをWAVEファイルへ出力"""
+    wf = wave.open(filename, "w")
+    wf.setnchannels(2)
+    wf.setsampwidth(bit)
+    wf.setframerate(fs)
+    wf.writeframes(data)
+    wf.close()
+
 if __name__ == "__main__" :
     #freqList = [262, 294, 330, 349, 392, 440, 494, 523]  # ドレミファソラシド
     freqList = [440]
@@ -41,5 +50,3 @@ if __name__ == "__main__" :
         data = createSineWave(1.0, f, 44100, 16, 5.0)
     #print(data)
     save(data,44100,2,"test.wav")
-    
-        
