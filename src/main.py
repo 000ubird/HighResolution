@@ -1,3 +1,5 @@
 from libs.fft.fft import fft
 
-fft("sample.wav")
+fileName = "../wav/sample.wav"
+
+fft(fileName)
