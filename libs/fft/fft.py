@@ -1,5 +1,6 @@
 import wave
 import numpy as np
+import scipy.fftpack
 from pylab import *
 from libs.audio.read import read_wav_cd
 
@@ -15,6 +16,10 @@ def fft(fileName) :
     #numpyを使用したFFT
     fft_data = np.fft.fft(wav_data[start:start+N])
     freq_data= np.fft.fftfreq(N, d=1/fs)
+    
+    #scipyを使用したFFT
+    #fft_data = scipy.fftpack.fft(x[start:start+N])
+    #freq_data= scipy.fftpack.fftfreq(N, d=1.0/ fs)
     
     amplitudeSpectrum = [np.sqrt(c.real ** 2 + c.imag ** 2) for c in fft_data]  # 振幅スペクトル
     phaseSpectrum = [np.arctan2(int(c.imag), int(c.real)) for c in fft_data]    # 位相スペクトル
