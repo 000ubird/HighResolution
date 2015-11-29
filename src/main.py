@@ -1,13 +1,29 @@
 from libs.fft.fft import fft
 from libs.audio.create import createSineWave2
 from libs.audio.wavio import writewav24
+from libs.audio.read import read_wav_cd
 
-fileName = "../wav/sinwave.wav"
+fileName = "../wav/sample_96000_24bit_001.wav"
 
-fft(fileName)
+def getTest(wavData):
+    array = []
+    
+    for i in wavData : 
+        array.append(i)
+    
+    return array
 
-#sin波の書き出しと合成のテスト
-createSineWave2(96000, 3, 440, "3.wav")
-a = createSineWave2(44100, 2, 1000, "1000.wav")
-b = createSineWave2(44100, 2, 440, "440.wav")
-writewav24("test.wav",44100,a+b)
+#CSVファイルに配列の要素を書き込み
+def writeText(wavData):
+    f = open('../hi.csv','w')
+    result = ""
+    
+    for i in wavData : 
+        result += repr(i)+',\n'
+        
+    f.write(result)
+    f.close()
+
+#WAVデータの読み込み
+wav_data = read_wav_cd(fileName)
+writeText( wav_data['data'] )
