@@ -3,19 +3,23 @@ from libs.audio.create import createSineWave2
 from libs.audio.wavio import writewav24
 from libs.audio.read import read_wav_cd
 
-fileName = "../wav/sample_96000_24bit_001.wav"
+fileName = "../wav/sample.wav"
 
 def getTest(wavData):
     array = []
     
-    for i in wavData : 
-        array.append(i)
-    
+    for i in range(1,len(wavData)) : 
+        data1 = wavData[i-1]
+        data2 = wavData[i]
+        div = data2 - data1
+        
+        array.append(div)
+        
     return array
 
 #CSVファイルに配列の要素を書き込み
-def writeText(wavData):
-    f = open('../hi.csv','w')
+def writeText(wavData,csvName):
+    f = open(csvName,'w')
     result = ""
     
     for i in wavData : 
@@ -26,4 +30,5 @@ def writeText(wavData):
 
 #WAVデータの読み込み
 wav_data = read_wav_cd(fileName)
-writeText( wav_data['data'] )
+writeText(wav_data['data'][0::2], '../amp.csv') #Lチャネルだけを抽出
+writeText(getTest(wav_data['data'][0::2]), '../div.csv')
