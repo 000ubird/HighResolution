@@ -49,5 +49,15 @@ def writeText(wavData,csvName):
 
 #WAVデータの読み込み
 wav_data = read_wav_cd(fileName)
-writeText(wav_data['data'][0::2], '../amp.csv') #Lチャネルだけを抽出
-writeText(getTest(wav_data['data'][0::2]), '../div.csv')
+
+#GMMの作成
+results = getDivAndAmps(wav_data['data']) #Lチャンルの信号を抽出
+
+f = open(csvFileName,'w')
+str = ""
+#for i in range(0,len(results['amps'])): 
+for i in range(0,maxFlame-mixFlame): 
+    str += repr(results['amps'][i])+','+repr(results['divs'][i])+',\n'
+    
+f.write(str)
+f.close()
