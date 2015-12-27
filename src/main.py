@@ -1,9 +1,7 @@
-from libs.fft.fft import fft
-from libs.audio.create import createSineWave2
-from libs.audio.wavio import writewav24
 from libs.audio.read import read_wav_cd
 
 import pylab
+import numpy as np
 
 fileName = "../wav/sample_96000_24bit_000.wav"
 csvFileName = "../result_hi.csv"
