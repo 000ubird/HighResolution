@@ -50,9 +50,8 @@ def getAmpGMM(wavData, numAmp,csvName):
     f.write(result)
     f.close()
     
-    
-    pylab.plot(x,y)
-    pylab.show()
+    #pylab.plot(x,y)
+    #pylab.show()
     
     #5番目が補完する振幅値
     return amps
@@ -68,23 +67,10 @@ def writeText(wavData,csvName):
     f.write(result)
     f.close()
 
-
 #WAVデータの読み込み
-
 wav_data = read_wav_cd(fileName)
 getAmpGMM(wav_data['data'][0::2], 21, csvFileName)
 
-###
-'''
-#GMMの作成
-results = getAmpGMM(wav_data['data'][0::2]) #Lチャンルの信号を抽出
-f = open(csvFileName,'w')
-str = ""
-#for i in range(0,len(results['amps'])): 
-for i in range(0,maxFlame-minFlame): 
-    str += repr(results['amps'][i])+','+repr(results['divs'][i])+',\n'
-    
-f.write(str)
-f.close()
-'''
-###
+#CSVファイルをfloatとして読み込み
+data = np.recfromcsv('../result_hi.csv')
+
