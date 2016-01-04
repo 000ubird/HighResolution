@@ -14,24 +14,25 @@ N = 20
 def getAmpArray(fileName):
     #CSVファイルをfloatとして読み込み
     data = np.recfromcsv(csvName)
+    dummy_data = [0,0,0,0,0,0,0,0,0,0,
+                  0,0,0,0,0,0,0,0,0,0]
     
+    array = np.array([dummy_data],dtype=float)
+    tmp_array = np.array([],dtype=float)
+    n = 1
+    m = 0
     #学習用の配列を作成する
-    array = []
-    n=0
-    m=0
-    try : 
-        for i in data : 
-            array.append([])
-            for row in i :
-                if row != False : 
-                    array[n].append(row)
-                    #print(n,N,row)    #デバッグ
-                    m+=1
-            m=0    
-            n+=1
-    except :
-        print("CSVファイルの読み込みに失敗しました。")
-    
+    for i in data : 
+        for j in i: 
+            tmp_array = np.insert(tmp_array, m, j)
+            m += 1
+                
+        array = np.insert(array,n,tmp_array,axis=0)
+        #print(array[n])    #デバッグ
+        n += 1
+        m=0
+        tmp_array = np.array([],dtype=float)    #tmp_arrayを初期化
+            
     return array
 
 def debug_gmm(gmm) :
