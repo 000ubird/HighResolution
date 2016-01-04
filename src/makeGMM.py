@@ -24,7 +24,7 @@ def getAmpArray(fileName):
             array.append([])
             for row in i :
                 if row != False : 
-                    array[n].append(row*10)
+                    array[n].append(row)
                     #print(n,N,row)    #デバッグ
                     m+=1
             m=0    
@@ -75,6 +75,6 @@ if __name__ == '__main__':
     print("GMMの学習が終わりました。")
     
     #GMMを保存
-    joblib.dump(gmm, "gmm.txt")
+    joblib.dump(gmm, "gmm")
     
     debug_gmm(gmm)
