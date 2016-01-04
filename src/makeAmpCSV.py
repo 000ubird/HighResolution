@@ -1,16 +1,12 @@
-'''
-@author: BP12084
-'''
 import numpy as np
-import pylab as pl
 import audioread as ar
 
 #ファイル名
-wavName = "../wav/sample_96000_24bit_000.wav"
+wavName = "../wav/sample_96000_24bit_001.wav"
 csvName = "../result_hi.csv"
 
 #サンプル数と開始フレーム
-sampleNum = 10000
+sampleNum = 5000
 beginFlame = 100
 endFlame = beginFlame + sampleNum
 
@@ -44,6 +40,7 @@ def read_wav_cd(wavName) :
     wav_float_r = pcm2float(wav_r)
     
     #読み込んだ波形の一部を描画
+    #import pylab as pl
     #pl.plot(wav_float_l[0:1000])
     #pl.show()
     

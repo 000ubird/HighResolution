@@ -19,15 +19,18 @@ def getAmpArray(fileName):
     array = []
     n=0
     m=0
-    for i in data : 
-        array.append([])
-        for row in i :
-            if row != False : 
-                array[n].append(row)
-                #print(n,m,row)    #デバッグ
-                m+=1
-        m=0    
-        n+=1
+    try : 
+        for i in data : 
+            array.append([])
+            for row in i :
+                if row != False : 
+                    array[n].append(row*10)
+                    #print(n,N,row)    #デバッグ
+                    m+=1
+            m=0    
+            n+=1
+    except :
+        print("CSVファイルの読み込みに失敗しました。")
     
     return array
 
@@ -66,7 +69,7 @@ if __name__ == '__main__':
     
     print("GMMの学習を開始します。")
     # GMMを学習
-    n_components = 5    #混合数
+    n_components = 10    #混合数
     gmm = mixture.GMM(n_components, covariance_type='full')
     gmm.fit(array)
     print("GMMの学習が終わりました。")
