@@ -14,6 +14,8 @@ N = 20
 def getAmpArray(fileName):
     #CSVファイルをfloatとして読み込み
     data = np.recfromcsv(csvName)
+    
+    #numpyのinsert用ダミーデータ
     dummy_data = [0,0,0,0,0,0,0,0,0,0,
                   0,0,0,0,0,0,0,0,0,0]
     
@@ -28,11 +30,11 @@ def getAmpArray(fileName):
             m += 1
                 
         array = np.insert(array,n,tmp_array,axis=0)
-        #print(array[n])    #デバッグ
-        n += 1
-        m=0
         tmp_array = np.array([],dtype=float)    #tmp_arrayを初期化
-            
+        #print(array[n])    #デバッグ
+        n+=1
+        m=0
+
     return array
 
 def debug_gmm(gmm) :
