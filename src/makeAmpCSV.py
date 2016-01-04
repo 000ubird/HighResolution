@@ -6,7 +6,7 @@ wavName = "../wav/sample_96000_24bit_001.wav"
 csvName = "../result_hi.csv"
 
 #サンプル数と開始フレーム
-sampleNum = 500
+sampleNum = 50000
 beginFlame = 100
 endFlame = beginFlame + sampleNum
 
@@ -52,13 +52,18 @@ def makeAmpCSV(wavData,csvName):
     result = ""
     
     #指定したフレーム部分内の振幅値を取得
-    #for i in range(beginFlame,endFlame) : 
     i = beginFlame
     while i < endFlame :
         #numAmp分だけ振幅値を抽出
         for j in range(i,i+N) : 
             amps.append(wavData[j])
-            result += repr(wavData[j])+','
+            
+            #最後の列にはカンマを付けない
+            if j == i+N-1 : 
+                result += repr(wavData[j])
+            else : 
+                result += repr(wavData[j])+','
+                
         result += '\n'
         i += N
         
