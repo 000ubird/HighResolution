@@ -53,16 +53,28 @@ def debug_gmm(gmm) :
     
 if __name__ == '__main__':
     #CSVファイルから振幅値を取得
+    print("振幅値を読み込みます。")
     array = getAmpArray(csvName)
+    print("振幅値を読み込みました。")
     
+    print("GMMの学習を開始します。")
     # GMMを学習
-    n_components = 5    #混合数
+    n_components = 20    #混合数
     gmm = mixture.GMM(n_components, covariance_type='full')
     gmm.fit(array)
-    
     print("GMMの学習が終わりました。")
     
     #GMMを保存
     joblib.dump(gmm, "gmm.txt")
     
-    debug_gmm(gmm)
+    #debug_gmm(gmm)
+    
+    # コンポーネントの平均ベクトルを描画
+    for k in range(5):
+        plt.plot(gmm.means_[k, :])
+    plt.xlim((0, (N+1)*2))
+    plt.show()
+
+    # 0番目のコンポーネントの共分散行列を描画
+    plt.imshow(gmm.covars_[0])
+    plt.show()

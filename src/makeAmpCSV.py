@@ -2,17 +2,16 @@
 @author: BP12084
 '''
 import numpy as np
-import wave
 import pylab as pl
 import audioread as ar
 
 #ファイル名
-wavName = "../wav/sample_44100_16bit_000.wav"
+wavName = "../wav/sample_96000_24bit_000.wav"
 csvName = "../result_hi.csv"
 
 #サンプル数と開始フレーム
-sampleNum = 4000
-beginFlame = 0
+sampleNum = 10000
+beginFlame = 1000
 endFlame = beginFlame + sampleNum
 
 #取得する振幅値の数
@@ -45,7 +44,7 @@ def read_wav_cd(wavName) :
     wav_float_r = pcm2float(wav_r)
     
     #読み込んだ波形の一部を描画
-    pl.plot(wav_float_l[beginFlame:1000])
+    pl.plot(wav_float_l[0:1000])
     pl.show()
     
     return {"amp_l":wav_float_l, "amp_r":wav_float_r}
