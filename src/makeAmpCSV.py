@@ -11,7 +11,7 @@ csvName = "../result_hi.csv"
 
 #サンプル数と開始フレーム
 sampleNum = 10000
-beginFlame = 1000
+beginFlame = 100
 endFlame = beginFlame + sampleNum
 
 #取得する振幅値の数
@@ -44,8 +44,8 @@ def read_wav_cd(wavName) :
     wav_float_r = pcm2float(wav_r)
     
     #読み込んだ波形の一部を描画
-    pl.plot(wav_float_l[0:1000])
-    pl.show()
+    #pl.plot(wav_float_l[0:1000])
+    #pl.show()
     
     return {"amp_l":wav_float_l, "amp_r":wav_float_r}
 
@@ -55,13 +55,16 @@ def makeAmpCSV(wavData,csvName):
     result = ""
     
     #指定したフレーム部分内の振幅値を取得
-    for i in range(beginFlame,endFlame) : 
+    #for i in range(beginFlame,endFlame) : 
+    i = beginFlame
+    while i < endFlame :
         #numAmp分だけ振幅値を抽出
         for j in range(i,i+N) : 
             amps.append(wavData[j])
             result += repr(wavData[j])+','
         result += '\n'
-    
+        i += N
+        
     #CSVファイルに格納
     try : 
         f = open(csvName,'w')
