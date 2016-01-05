@@ -12,10 +12,6 @@ data_train, data_test, label_train, label_test = train_test_split(digits.data, d
 lin_svc = svm.LinearSVC()
 lin_svc.fit(data_train, label_train)
 
-#学習2 - GMM
-gmm = mixture.GMM()
-gmm.fit(data_train,label_train)
-
 #予測
 predict = lin_svc.predict(data_test)
 
@@ -24,3 +20,7 @@ print (accuracy_score(label_test,predict))
 
 #正答率レポート
 print (classification_report(label_test,predict))
+
+#学習2 - GMM
+gmm = mixture.GMM()
+gmm.fit(data_train,label_train)
