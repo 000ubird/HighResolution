@@ -61,3 +61,4 @@ wav/
 .settings/org.eclipse.core.resources.prefs
 *.wav
 *.csv
+*.npy
