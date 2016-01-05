@@ -60,3 +60,4 @@ wav/
 .pydevproject
 .settings/org.eclipse.core.resources.prefs
 *.wav
+*.csv
