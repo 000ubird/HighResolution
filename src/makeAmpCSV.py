@@ -9,7 +9,7 @@ wavName = "../wav/sample_96000_24bit_000.wav"
 csvName = "../result_hi.csv"
 
 #サンプル数と開始フレーム
-sampleNum = 1000
+sampleNum = 10000
 beginFlame = 1000
 endFlame = beginFlame + sampleNum
 
