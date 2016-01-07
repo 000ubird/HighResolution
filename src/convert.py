@@ -11,7 +11,7 @@ gmmFile = "gmm"
 N = 20
 
 # GMMの混合数
-K = 5
+K = 30
 
 def convert_mcep(sourceAmp, result, gmm):
     source_mcep = sourceAmp
@@ -24,14 +24,13 @@ def convert_mcep(sourceAmp, result, gmm):
     # 式11のフレームtに依存しない項を計算しておく
     ss = []
     for k in range(K):
-        #ss.append(np.dot(gmm.covars_[k, N:, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
-        ss.append(np.dot(gmm.covars_[k, 0:N, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
+        ss.append(np.dot(gmm.covars_[k, N:, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
+        #ss.append(np.dot(gmm.covars_[k, 0:N, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
         
     # 各フレームをGMMで変形する
     for t in range(len(source_mcep)):
         x_t = source_mcep[t]
         y_t = convert_frame(x_t, gmm, gauss, ss)
-        print(y_t)
     
     return y_t
 
@@ -56,8 +55,8 @@ def P(k, x, gmm, gauss, denom):
 def E(k, x, gmm, ss):
     tmp = np.dot(ss[k], x - gmm.means_[k, 0:N]) #内積を取る
     
-    #return gmm.means_[k, N:] + tmp
-    return gmm.means_[k, 0:] + tmp
+    return gmm.means_[k, N:] + tmp
+    #return gmm.means_[k, 0:] + tmp
 
 if __name__ == '__main__':
     print("GMMの読み込みを開始します。")
@@ -65,23 +64,17 @@ if __name__ == '__main__':
     #print(gmm.covars_)
     print("GMMの読み込みが終わりました。")
     
-    sampleAmp = [[0.24906155583361309,0.2772301400799585,
-                  0.23670155949583421,0.20682393871883298,
-                  0.22400585955381938,0.249977111117893, 
-                  0.24286629840998566,0.21613208410901211,
-                  0.20715964232306894,0.21845149082918791,
-                  0.22156437879573962,0.20630512405774101,
-                  0.19275490585039826,0.19483016449476609,
-                  0.19956053346354563,0.19180883205664234,
-                  0.17877742851039155,0.17523728141117587,
-                  0.17871639149143956,0.17569505905331584,]]
+    sampleAmp = [[-0.16595458984375,-0.16595458984375,
+                  -0.1448974609375,-0.1448974609375,
+                  0.055299539170506916,0.055299539170506916,
+                  0.33420819727164525,0.33420819727164525,
+                  0.21985534226508377,0.21985534226508377,
+                  0.1945249794000061,0.1945249794000061,
+                  0.28949858088930935,0.28949858088930935,
+                  0.17230750450148014,0.17230750450148014,
+                  0.24451429792168949,0.24451429792168949,
+                  0.19888912625507371,0.19888912625507371]]
     
     result_amp = convert_mcep(sampleAmp, "out.txt", gmm)
     
-    print("最終結果 : \n")
-    result = ""
-    for i in result_amp : 
-        result += str(i)+","
-        
-    print(result)
-    
+    print("最終結果 : ",result_amp)
