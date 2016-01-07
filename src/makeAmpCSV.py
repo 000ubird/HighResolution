@@ -12,7 +12,7 @@ N = 20
 
 #抽出するフレーム数
 beginFlame = 0
-endFlame = 50000
+endFlame = 60000
 
 #参考: http://wrist.hatenablog.com/entry/2013/08/06/015240
 def pcm2float(short_ndary):
@@ -33,8 +33,8 @@ def read_wav_cd(wavName) :
     wav_l = wav_ary[0::2]
     wav_r = wav_ary[1::2]
     
-    print(wav_l.shape)
-    print(wav_r.shape)
+    #print(wav_l.shape)
+    #print(wav_r.shape)
     
     # shortをfloat64に変換
     wav_float_l = pcm2float(wav_l)
