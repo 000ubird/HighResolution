@@ -1,6 +1,8 @@
 import numpy as np
+import pylab as pl
 from scipy.stats import multivariate_normal
 from sklearn.externals import joblib
+from makeGMM import getAmpArray
 
 #参考 : http://aidiary.hatenablog.com/entry/20150418/1429357892
 
@@ -13,9 +15,7 @@ N = 20
 # GMMの混合数
 K = 30
 
-def convert_mcep(sourceAmp, result, gmm):
-    source_mcep = sourceAmp
-
+def convert_mcep(sourceAmp, gmm):
     # 式9の多次元正規分布のオブジェクトを作成しておく
     gauss = []
     for k in range(K):
@@ -25,11 +25,10 @@ def convert_mcep(sourceAmp, result, gmm):
     ss = []
     for k in range(K):
         ss.append(np.dot(gmm.covars_[k, N:, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
-        #ss.append(np.dot(gmm.covars_[k, 0:N, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
         
     # 各フレームをGMMで変形する
-    for t in range(len(source_mcep)):
-        x_t = source_mcep[t]
+    for t in range(len(sourceAmp)):
+        x_t = sourceAmp[t]
         y_t = convert_frame(x_t, gmm, gauss, ss)
     
     return y_t
@@ -56,25 +55,29 @@ def E(k, x, gmm, ss):
     tmp = np.dot(ss[k], x - gmm.means_[k, 0:N]) #内積を取る
     
     return gmm.means_[k, N:] + tmp
-    #return gmm.means_[k, 0:] + tmp
 
 if __name__ == '__main__':
     print("GMMの読み込みを開始します。")
     gmm = joblib.load(gmmFile)
-    #print(gmm.covars_)
-    print("GMMの読み込みが終わりました。")
+    print("GMMの読み込みが終わりました。\n")
     
-    sampleAmp = [[-0.16595458984375,-0.16595458984375,
-                  -0.1448974609375,-0.1448974609375,
-                  0.055299539170506916,0.055299539170506916,
-                  0.33420819727164525,0.33420819727164525,
-                  0.21985534226508377,0.21985534226508377,
-                  0.1945249794000061,0.1945249794000061,
-                  0.28949858088930935,0.28949858088930935,
-                  0.17230750450148014,0.17230750450148014,
-                  0.24451429792168949,0.24451429792168949,
-                  0.19888912625507371,0.19888912625507371]]
+    print("変換元のファイルを読み込んでいます。")
+    sampleAmp = getAmpArray("../result_cd.csv")
+    sampleFlame = sampleAmp[2500]
+    print("変換元 : ",sampleFlame)
+    pl.plot(sampleFlame)
+    pl.show()
     
-    result_amp = convert_mcep(sampleAmp, "out.txt", gmm)
+    print("変換を実行します。")
+    result_amp = convert_mcep([sampleFlame], gmm)
+    print("変換が終わりました。\n")
     
     print("最終結果 : ",result_amp)
+    pl.plot(result_amp)
+    pl.show()
+    
+    print("正解ファイルを読み込んでいます。")
+    correct = getAmpArray("../result_hi.csv")
+    pl.plot(correct[2500])
+    pl.show()
+    
