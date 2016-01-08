@@ -16,8 +16,7 @@ def getAmpArray(fileName):
     data = np.recfromcsv(fileName)
     
     #numpyのinsert用ダミーデータ
-    dummy_data = [0,0,0,0,0,0,0,0,0,0,
-                  0,0,0,0,0,0,0,0,0,0]
+    dummy_data = np.zeros(N)
     
     array = np.array([dummy_data],dtype=float)
     tmp_array = np.array([],dtype=float)
