@@ -71,7 +71,7 @@ def convertAmp(gmm,convArray,components):
             sys.stdout.flush()
             time.sleep(0.01)
         currentP = nextP
-    sys.stdout.write("\r%s" % str(100)+"% ")
+    sys.stdout.write("\r%s" % str(100)+"% \n")
 
     return result
 
