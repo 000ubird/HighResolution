@@ -12,7 +12,7 @@ WAV_NAME_GMM = "../wav/sample_96000_24bit_001.wav"
 
 #抽出するフレーム数
 BEGIN_FLAME = 0  #固定
-END_FLAME = 300000 #10000000
+END_FLAME = 384000 #10000000
 
 #GMMの混合数
 components = 30
@@ -39,7 +39,7 @@ print("学習が完了しました。\n")
 convertSample = cd[1000]    #ここで別のwavファイルなどを読み込む
 
 print("変換を実行します。")
-result_amp = convert([convertSample], gmm)
+result_amp = convert([convertSample], gmm, components)
 print("変換が終わりました。\n")
 
 print("変換元 の振幅値: ",convertSample)

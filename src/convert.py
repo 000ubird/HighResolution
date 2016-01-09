@@ -12,37 +12,34 @@ gmmFile = "gmm"
 #取得する振幅値の数
 N = 20
 
-# GMMの混合数
-K = 30
-
-def convert(sourceAmp, gmm):
+def convert(sourceAmp, gmm,component):
     # 式9の多次元正規分布のオブジェクトを作成しておく
     gauss = []
-    for k in range(K):
+    for k in range(component):
         gauss.append(multivariate_normal(gmm.means_[k, 0:N], gmm.covars_[k, 0:N, 0:N]))
 
     # 式11のフレームtに依存しない項を計算しておく
     ss = []
-    for k in range(K):
+    for k in range(component):
         ss.append(np.dot(gmm.covars_[k, N:, 0:N], np.linalg.inv(gmm.covars_[k, 0:N, 0:N])))
         
     # 各フレームをGMMで変形する
     for t in range(len(sourceAmp)):
         x_t = sourceAmp[t]
-        y_t = convert_frame(x_t, gmm, gauss, ss)
+        y_t = convert_frame(x_t, gmm, gauss, ss, component)
     
     return y_t
 
 # 式(13)の計算
-def convert_frame(x, gmm, gauss, ss):
+def convert_frame(x, gmm, gauss, ss,component):
     # 式(9)の分母だけ先に計算
-    denom = np.zeros(K)
-    for n in range(K):
+    denom = np.zeros(component)
+    for n in range(component):
         denom[n] = gmm.weights_[n] * gauss[n].pdf(x)
         
     y = np.zeros_like(x)
     
-    for k in range(K):
+    for k in range(component):
         y += P(k, x, gmm, gauss, denom) * E(k, x, gmm, ss)
     return y
 
@@ -69,7 +66,7 @@ if __name__ == '__main__':
     pl.show()
     
     print("変換を実行します。")
-    result_amp = convert([sampleFlame], gmm)
+    result_amp = convert([sampleFlame], gmm,30)
     print("変換が終わりました。\n")
     
     print("最終結果 : ",result_amp)
