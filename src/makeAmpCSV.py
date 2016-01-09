@@ -2,8 +2,8 @@ import numpy as np
 import audioread as ar
 
 #ファイル名
-wavName_hi = "../wav/sample_hi.wav"
-wavName_cd = "../wav/sample_cd.wav"
+wavName_hi = "../wav/02-Are You Real.wav"
+wavName_cd = "../wav/02-Are You Real_CD.wav"
 csvName_hi = "../result_hi.csv"
 csvName_cd = "../result_cd.csv"
 
@@ -11,8 +11,8 @@ csvName_cd = "../result_cd.csv"
 N = 20
 
 #抽出するフレーム数
-beginFlame = 0
-endFlame = 60000
+beginFlame = 0  #固定
+endFlame = 100 #10000000
 
 #参考: http://wrist.hatenablog.com/entry/2013/08/06/015240
 def pcm2float(short_ndary):
@@ -37,12 +37,12 @@ def read_wav_cd(wavName) :
     #print(wav_r.shape)
     
     # shortをfloat64に変換
-    wav_float_l = pcm2float(wav_l)
-    wav_float_r = pcm2float(wav_r)
+    wav_float_l = pcm2float(wav_l[beginFlame:endFlame]) #配列が大きいとメモリエラー
+    wav_float_r = pcm2float(wav_r[beginFlame:endFlame])
     
     #読み込んだ波形の一部を描画
     #import pylab as pl
-    #pl.plot(wav_float_l[0:1000])
+    #pl.plot(wav_float_l[beginFlame:endFlame])
     #pl.show()
     
     return {"amp_l":wav_float_l, "amp_r":wav_float_r}
@@ -85,7 +85,7 @@ def makeAmpCSV2(wavData,csvName,begin,end):
     
     #指定したフレーム部分内の振幅値を取得
     i = begin
-    while i < end :
+    while i < end :         
         #numAmp分だけ振幅値を抽出
         for j in range(i,i+N,2) : 
                 result += repr(wavData[j])+','
@@ -106,13 +106,64 @@ def makeAmpCSV2(wavData,csvName,begin,end):
         print("CSVファイルの出力中にエラーが発生しました。")
         exit()
 
+def makeAmpArrayHi(wavData,begin,end) :
+    #numpyのinsert用ダミーデータ
+    dummy_data = np.zeros(N)
+    array = np.array([dummy_data],dtype=float)
+    tmp_array = np.array([],dtype=float) 
+    
+    #指定したフレーム部分内の振幅値を取得
+    i = 1
+    n = 1
+    m = 0
+    while i < end - N :
+        for j in range(i,i+N) : 
+            tmp_array = np.insert(tmp_array, m, wavData[j])
+            m += 1
+            
+        array = np.insert(array,n,tmp_array,axis=0)
+        tmp_array = np.array([],dtype=float)
+        i += N
+        n += 1
+        m = 0
+        
+    return array
+
+def makeAmpArrayCD(wavData,begin,end) :
+    #numpyのinsert用ダミーデータ
+    dummy_data = np.zeros(N)
+    array = np.array([dummy_data],dtype=float)
+    tmp_array = np.array([],dtype=float) 
+    
+    #指定したフレーム部分内の振幅値を取得
+    i = 1
+    n = 1
+    m = 0
+    while i < end - N :
+        for j in range(i,i+10) : 
+            tmp_array = np.insert(tmp_array, m, wavData[j])
+            m += 1
+            tmp_array = np.insert(tmp_array, m, wavData[j])
+            m += 1
+            
+        array = np.insert(array,n,tmp_array,axis=0)
+        tmp_array = np.array([],dtype=float)
+        i += N
+        n += 1
+        m = 0
+        
+    return array
+
 if __name__ == '__main__':
     #WAVデータの読み込み
     wav_data_hi = read_wav_cd(wavName_hi)
     #wav_data_cd = read_wav_cd(wavName_cd)
     
+    a = makeAmpArrayHi(wav_data_hi['amp_l'], beginFlame, endFlame)
+    b = makeAmpArrayCD(wav_data_hi['amp_l'], beginFlame, endFlame)
+    
     #CSVファイルの出力
-    makeAmpCSV(wav_data_hi['amp_l'], csvName_hi,beginFlame,endFlame)
+    #makeAmpCSV(wav_data_hi['amp_l'], csvName_hi,beginFlame,endFlame)
     #現時点ではハイレゾ音源から擬似CD音源の特徴ベクトルを作成する
-    makeAmpCSV2(wav_data_hi['amp_l'], csvName_cd,beginFlame,endFlame)
-    print("CSVファイルを出力しました。")
+    #makeAmpCSV2(wav_data_hi['amp_l'], csvName_cd,beginFlame,endFlame)
+    #print("CSVファイルを出力しました。")
