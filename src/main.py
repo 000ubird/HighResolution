@@ -7,15 +7,15 @@ from convert import convert
 import numpy as np
 import pylab as pl
 
-#学習に使うwavファイル名
+#学習に使う音声ファイル名
 WAV_NAME_GMM = "../wav/sample_96000_24bit_001.wav"
 
 #抽出するフレーム数
 BEGIN_FLAME = 0  #固定
-END_FLAME = 384000 #10000000
+END_FLAME = 380000
 
 #GMMの混合数
-components = 30
+components = 50
 
 print("学習に使用する音声ファイルを読み込んでいます。")
 wav_data_hi = read_wav_cd(WAV_NAME_GMM,BEGIN_FLAME,END_FLAME)
@@ -36,18 +36,20 @@ debug_gmm(gmm)
 print("学習が完了しました。\n")
 
 #変換に使うサンプル
-convertSample = cd[1000]    #ここで別のwavファイルなどを読み込む
+flame = 10000
+convertSample = cd[flame]    #ここで別のwavファイルなどを読み込む
+correctSample = hi[flame]
 
 print("変換を実行します。")
 result_amp = convert([convertSample], gmm, components)
 print("変換が終わりました。\n")
 
-print("変換元 の振幅値: ",convertSample)
+print("変換元 の振幅値: \n",convertSample)
 pl.plot(convertSample)
-pl.show()
-print("変換結果の振幅値 : ",result_amp)
+
+print("変換結果の振幅値 : \n",result_amp)
 pl.plot(result_amp)
-pl.show()
-print("正解の振幅値 : ",hi[1000])
-pl.plot(hi[1000])
+
+print("正解の振幅値 : \n",correctSample)
+pl.plot(correctSample)
 pl.show()
