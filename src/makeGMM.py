@@ -36,6 +36,18 @@ def getAmpArray(fileName):
 
     return array
 
+def makeGMM(componets , samples):
+    print("GMMの学習を開始します。")
+    # GMMを学習
+    gmm = mixture.GMM(componets, covariance_type='full')
+    gmm.fit(samples)
+    
+    #GMMを保存
+    joblib.dump(gmm, "gmm")
+    print("GMMの学習が終わりました。")
+    
+    return gmm
+
 def debug_gmm(gmm) :
     # 結果を表示
     print ("*** weights")   #混合係数
@@ -61,14 +73,6 @@ if __name__ == '__main__':
     print("ベクトルを結合しています。\n")
     Z = np.hstack((array,array2))
     
-    print("GMMの学習を開始します。")
-    # GMMを学習
-    n_components = 30    #混合数
-    gmm = mixture.GMM(n_components, covariance_type='full')
-    gmm.fit(Z)
-    print("GMMの学習が終わりました。")
-    
-    #GMMを保存
-    joblib.dump(gmm, "gmm")
+    gmm = makeGMM(30, Z)
     
     debug_gmm(gmm)
