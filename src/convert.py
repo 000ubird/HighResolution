@@ -1,5 +1,7 @@
 import numpy as np
 import pylab as pl
+import sys, time
+import math
 from scipy.stats import multivariate_normal
 from sklearn.externals import joblib
 from makeGMM import getAmpArray
@@ -52,6 +54,26 @@ def E(k, x, gmm, ss):
     tmp = np.dot(ss[k], x - gmm.means_[k, 0:N]) #内積を取る
     
     return gmm.means_[k, N:] + tmp
+
+#変換を実行
+def convertAmp(gmm,convArray,components):
+    result = []
+    
+    currentP = 0
+    for i in range(0,len(convArray)) : 
+        convFlame = convert([convArray[i]], gmm, components)
+        result.extend(convFlame * 5000000.0)   #24bitに変換
+        
+        #進行度合いの表示
+        nextP = math.floor(i/len(convArray)*100)
+        if nextP > currentP : 
+            sys.stdout.write("\r%s" % str(nextP)+"% ")
+            sys.stdout.flush()
+            time.sleep(0.01)
+        currentP = nextP
+    sys.stdout.write("\r%s" % str(100)+"% ")
+
+    return result
 
 if __name__ == '__main__':
     print("GMMの読み込みを開始します。")

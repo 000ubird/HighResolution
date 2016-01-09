@@ -2,11 +2,8 @@ from makeAmpCSV import makeAmpArrayHi
 from makeAmpCSV import makeAmpArrayCD
 from makeAmpCSV import read_wav_cd
 from makeGMM import makeGMM,debug_gmm
-from convert import convert
+from convert import convertAmp
 from sklearn.externals import joblib
-
-import math
-import sys, time
 import numpy as np
 import matplotlib.pyplot as plt
 import wavio
@@ -42,7 +39,7 @@ print("学習が完了しました。\n")
 '''
 
 #高階調化処理
-wav = read_wav_cd("../wav/sample_96000_24bit_000.wav",BEGIN_FLAME,END_FLAME)
+wav = read_wav_cd("../wav/sample_96000_24bit_001.wav",BEGIN_FLAME,END_FLAME)
 print("変換する振幅データを読み込んでいます。")
 cdAmp = makeAmpArrayCD(wav['amp_l'], BEGIN_FLAME, END_FLAME)
 print("正解振幅データを作成しています。")   #正解を見たい時のオプション
@@ -52,31 +49,17 @@ print("正解振幅データを作成しています。")   #正解を見たい�
 gmm = joblib.load("gmm")    #GMMファイルの読み込み
 
 print("変換を実行します。")
-result = []
-currentP = 0
-for i in range(0,len(cdAmp)) : 
-    convFlame = convert([cdAmp[i]], gmm, components)
-    result.extend(convFlame * 16777216.0)   #24bitに変換
-    
-    #進行度合いの表示
-    nextP = math.floor(i/len(cdAmp)*100)
-    if nextP > currentP : 
-        sys.stdout.write("\r%s" % str(nextP)+"% ")
-        sys.stdout.flush()
-        time.sleep(0.01)
-    currentP = nextP
-sys.stdout.write("\r%s" % str(100)+"% ")
-
+result = convertAmp(gmm, cdAmp, components)
+#変換元
 b = []
-for j in cdAmp : 
-    b.extend(j)
-    
-c = []
-#for j in originAmp : 
-#    c.extend(j)
-print("\n変換が終わりました。\n")
+for j in cdAmp : b.extend(j * 5000000.0)
 
-wavio.writewav24("sample.wav", 96000, result)
+#c = []
+#for j in originAmp : c.extend(j)
+print("\n変換が終了しました。\n")
+
+#音割れあり
+wavio.writewav24("out.wav", 96000, result)
 
 #波形の表示
 fl1 = 0
