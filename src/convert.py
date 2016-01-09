@@ -15,7 +15,7 @@ N = 20
 # GMMの混合数
 K = 30
 
-def convert_mcep(sourceAmp, gmm):
+def convert(sourceAmp, gmm):
     # 式9の多次元正規分布のオブジェクトを作成しておく
     gauss = []
     for k in range(K):
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     pl.show()
     
     print("変換を実行します。")
-    result_amp = convert_mcep([sampleFlame], gmm)
+    result_amp = convert([sampleFlame], gmm)
     print("変換が終わりました。\n")
     
     print("最終結果 : ",result_amp)

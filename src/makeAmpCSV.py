@@ -1,5 +1,7 @@
 import numpy as np
 import audioread as ar
+import math
+import sys, time
 
 #ファイル名
 wavName_hi = "../wav/02-Are You Real.wav"
@@ -12,7 +14,7 @@ N = 20
 
 #抽出するフレーム数
 beginFlame = 0  #固定
-endFlame = 100 #10000000
+endFlame = 1000000 #10000000
 
 #参考: http://wrist.hatenablog.com/entry/2013/08/06/015240
 def pcm2float(short_ndary):
@@ -20,11 +22,15 @@ def pcm2float(short_ndary):
     return np.where(float_ndary > 0.0, float_ndary / 32767.0, float_ndary / 32768.0)
 
 #ファイル名を指定し、wavファイルのサンプリング周波数と振幅値を連想配列で返す
-def read_wav_cd(wavName) :
+def read_wav_cd(wavName,begin,end) :
     wav_bary = bytearray()
     
     with ar.audio_open(wavName) as f:
-        print("ch: {0}, fs: {1}, duration [s]: {2}".format(f.channels, f.samplerate, f.duration))
+        if f.duration*f.samplerate < end-begin:
+            print("サンプル数が音声信号の長さを超えています。")
+            exit()
+            
+        print("file : ",wavName,"ch: {0}, fs: {1}, duration [s]: {2}".format(f.channels, f.samplerate, f.duration))
         # "block_samples"で指定されたチャンクサイズずつ処理する(デフォルト1024)
         for buf in f:
             wav_bary.extend(buf)
@@ -37,8 +43,8 @@ def read_wav_cd(wavName) :
     #print(wav_r.shape)
     
     # shortをfloat64に変換
-    wav_float_l = pcm2float(wav_l[beginFlame:endFlame]) #配列が大きいとメモリエラー
-    wav_float_r = pcm2float(wav_r[beginFlame:endFlame])
+    wav_float_l = pcm2float(wav_l[begin:end]) #配列が大きいとメモリエラー
+    wav_float_r = pcm2float(wav_r[begin:end])
     
     #読み込んだ波形の一部を描画
     #import pylab as pl
@@ -113,20 +119,36 @@ def makeAmpArrayHi(wavData,begin,end) :
     tmp_array = np.array([],dtype=float) 
     
     #指定したフレーム部分内の振幅値を取得
-    i = 1
-    n = 1
-    m = 0
+    i = 1   #処理する先頭のフレーム数
+    n = 1   #結果を保持する配列のインデックス
+    m = 0   #N個分の振幅値を保持する配列のインデックス
+    current = 0
+    
     while i < end - N :
+        #N個分の配列データを抽出
         for j in range(i,i+N) : 
             tmp_array = np.insert(tmp_array, m, wavData[j])
             m += 1
             
+        #抽出したデータを追加    
         array = np.insert(array,n,tmp_array,axis=0)
+        
+        #各変数の初期化
         tmp_array = np.array([],dtype=float)
         i += N
         n += 1
-        m = 0
+        m =  0
         
+        #進行度合いの表示
+        nextP = math.floor(i/end*100)
+        if nextP > current : 
+            sys.stdout.write(str(nextP)+"% ")
+            sys.stdout.flush()
+            time.sleep(0.01)
+        current = nextP
+    
+    print("\n作成完了\n")
+    
     return array
 
 def makeAmpArrayCD(wavData,begin,end) :
@@ -136,27 +158,43 @@ def makeAmpArrayCD(wavData,begin,end) :
     tmp_array = np.array([],dtype=float) 
     
     #指定したフレーム部分内の振幅値を取得
-    i = 1
-    n = 1
-    m = 0
+    i = 1   #処理する先頭のフレーム数
+    n = 1   #結果を保持する配列のインデックス
+    m = 0   #N個分の振幅値を保持する配列のインデックス
+    current = 0
+    
     while i < end - N :
-        for j in range(i,i+10) : 
+        #N個分の配列データを抽出
+        for j in range(i,i+int(N/2)) : 
             tmp_array = np.insert(tmp_array, m, wavData[j])
             m += 1
             tmp_array = np.insert(tmp_array, m, wavData[j])
             m += 1
-            
+        
+        #抽出したデータを追加    
         array = np.insert(array,n,tmp_array,axis=0)
+        
+        #各変数の初期化
         tmp_array = np.array([],dtype=float)
         i += N
         n += 1
-        m = 0
+        m =  0
+        
+        #進行度合いの表示
+        nextP = math.floor(i/end*100)
+        if nextP > current : 
+            sys.stdout.write(str(nextP)+"% ")
+            sys.stdout.flush()
+            time.sleep(0.01)
+        current = nextP
+    
+    print("\n作成完了\n")
         
     return array
 
 if __name__ == '__main__':
     #WAVデータの読み込み
-    wav_data_hi = read_wav_cd(wavName_hi)
+    wav_data_hi = read_wav_cd(wavName_hi,beginFlame,endFlame)
     #wav_data_cd = read_wav_cd(wavName_cd)
     
     a = makeAmpArrayHi(wav_data_hi['amp_l'], beginFlame, endFlame)
