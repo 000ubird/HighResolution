@@ -12,10 +12,6 @@ csvName_cd = "../result_cd.csv"
 #取得する振幅値の数
 N = 20
 
-#抽出するフレーム数
-beginFlame = 0  #固定
-endFlame = 1000000 #10000000
-
 #参考: http://wrist.hatenablog.com/entry/2013/08/06/015240
 def pcm2float(short_ndary):
     float_ndary = np.array(short_ndary, dtype=np.float64)
@@ -49,7 +45,7 @@ def read_wav_cd(wavName,begin,end) :
     
     #読み込んだ波形の一部を描画
     #import pylab as pl
-    #pl.plot(wav_float_l[beginFlame:endFlame])
+    #pl.plot(wav_float_l[begin:end])
     #pl.show()
     
     return {"amp_l":wav_float_l, "amp_r":wav_float_r}
@@ -167,7 +163,7 @@ def makeAmpArrayCD(wavData,begin,end) :
     
     while i < end - N :
         #N個分の配列データを抽出
-        for j in range(i,i+int(N/2)) : 
+        for j in range(i,i+N,2) : 
             tmp_array = np.insert(tmp_array, m, wavData[j])
             m += 1
             tmp_array = np.insert(tmp_array, m, wavData[j])
@@ -196,6 +192,10 @@ def makeAmpArrayCD(wavData,begin,end) :
     return array
 
 if __name__ == '__main__':
+    #抽出するフレーム数
+    beginFlame = 0  #固定
+    endFlame = 1000000 #10000000
+
     #WAVデータの読み込み
     wav_data_hi = read_wav_cd(wavName_hi,beginFlame,endFlame)
     #wav_data_cd = read_wav_cd(wavName_cd)
