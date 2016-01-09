@@ -19,15 +19,16 @@ components = 30
 
 print("学習に使用する音声ファイルを読み込んでいます。")
 wav_data_hi = read_wav_cd(WAV_NAME_GMM,BEGIN_FLAME,END_FLAME)
+print("音声ファイルを読み込みました。\n")
 
 print("1つ目の学習用データを作成しています。")
 cd = makeAmpArrayCD(wav_data_hi['amp_l'], BEGIN_FLAME, END_FLAME)    #変換元
 print("2つ目の学習用データを作成しています。")
 hi = makeAmpArrayHi(wav_data_hi['amp_l'], BEGIN_FLAME, END_FLAME)    #変換先
 
-print("2つの学習用データを結合しています。\n")
+print("2つの学習用データを結合しています。")
 sample = np.hstack((cd,hi))
-print("学習データが生成されました。サンプル数は",int(END_FLAME/20),"個です。")
+print("学習データが生成されました。サンプル数は",int(END_FLAME/20),"個です。\n")
 
 print("学習を実行します。")
 gmm = makeGMM(components,sample)

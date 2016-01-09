@@ -30,7 +30,8 @@ def read_wav_cd(wavName,begin,end) :
             print("サンプル数が音声信号の長さを超えています。")
             exit()
             
-        print("file : ",wavName,"ch: {0}, fs: {1}, duration [s]: {2}".format(f.channels, f.samplerate, f.duration))
+        print("ファイル名 : ",wavName,"\nチャネル数: {0}[channel] \nサンプリング周波数 : {1}[Hz]\nフレーム数 : {2}"
+              .format(f.channels, f.samplerate, f.duration*f.samplerate))
         # "block_samples"で指定されたチャンクサイズずつ処理する(デフォルト1024)
         for buf in f:
             wav_bary.extend(buf)
@@ -142,11 +143,12 @@ def makeAmpArrayHi(wavData,begin,end) :
         #進行度合いの表示
         nextP = math.floor(i/end*100)
         if nextP > current : 
-            sys.stdout.write(str(nextP)+"% ")
+            sys.stdout.write("\r%s" % str(nextP)+"% ")
             sys.stdout.flush()
             time.sleep(0.01)
         current = nextP
     
+    sys.stdout.write("\r%s" % str(100)+"% ")
     print("\n作成完了\n")
     
     return array
@@ -183,11 +185,12 @@ def makeAmpArrayCD(wavData,begin,end) :
         #進行度合いの表示
         nextP = math.floor(i/end*100)
         if nextP > current : 
-            sys.stdout.write(str(nextP)+"% ")
+            sys.stdout.write("\r%s" % str(nextP)+"% ")
             sys.stdout.flush()
             time.sleep(0.01)
         current = nextP
-    
+        
+    sys.stdout.write("\r%s" % str(100)+"% ")
     print("\n作成完了\n")
         
     return array

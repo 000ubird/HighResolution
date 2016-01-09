@@ -37,14 +37,12 @@ def getAmpArray(fileName):
     return array
 
 def makeGMM(componets , samples):
-    print("GMMの学習を開始します。")
     # GMMを学習
     gmm = mixture.GMM(componets, covariance_type='full')
     gmm.fit(samples)
     
     #GMMを保存
     joblib.dump(gmm, "gmm")
-    print("GMMの学習が終わりました。")
     
     return gmm
 
