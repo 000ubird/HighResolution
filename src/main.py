@@ -74,5 +74,17 @@ plt.xlabel("Time [t]")
 plt.ylabel("Amplitude")
 plt.show()
 
+#波形の表示
+fl1 = 150000
+fl2 = 150500
+plt.plot(inputArray[fl1:fl2], label = "CD")     #入力波形
+plt.plot(result_l[fl1:fl2], label = "Result")   #出力波形
+#plt.plot(origin[fl1:fl2], label = "Origin")     #正解波形
+plt.legend()
+plt.title("Result")
+plt.xlabel("Time [t]")
+plt.ylabel("Amplitude")
+plt.show()
+
 #結果をwavファイルに書き込み
 wavio.writewav24("result.wav", 96000, result_l)
