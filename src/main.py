@@ -9,14 +9,11 @@ import matplotlib.pyplot as plt
 import wavio
 
 #学習に使う音声ファイル名
-WAV_NAME_GMM = "../wav/sample_96000_24bit_001.wav"
+WAV_NAME_GMM = "../wav/Moanin.wav"
 
 #抽出するフレーム数
 BEGIN_FLAME = 0  #固定
 END_FLAME = 380000
-
-#GMMの混合数
-components = 30
 
 '''
 #学習処理
@@ -33,54 +30,43 @@ print("2つの学習用データを結合しています。")
 sample = np.hstack((cd,hi))
 print("学習データが生成されました。サンプル数は",int(END_FLAME/20),"個です。\n")
 
-print("学習を実行します。")
-gmm = makeGMM(components,sample)
-#debug_gmm(gmm)
-print("学習が完了しました。\n")
+print("学習を実行します。混合数=50")
+gmm1 = makeGMM(50,sample,"gmm_jazz_50")
+print("学習を実行します。混合数=100")
+gmm2 = makeGMM(100,sample,"gmm_jazz_100")   #100以降はメモリエラーが発生する場合あり
 '''
 
 #高階調化処理
-wav = read_wav_cd("../wav/sample_96000_24bit_001.wav",BEGIN_FLAME,END_FLAME)
+wav = read_wav_cd("../wav/Moanin.wav",BEGIN_FLAME,END_FLAME)
+
 print("変換する振幅データを読み込みます。")
 cdAmp_l = makeAmpArrayCD(wav['amp_l'], BEGIN_FLAME, END_FLAME)  #Lチャネル
 #cdAmp_r = makeAmpArrayCD(wav['amp_r'], BEGIN_FLAME, END_FLAME)  #Rチャネル
 
-#print("正解振幅データを作成しています。")   #正解を見たい時のオプション
-#originAmp = makeAmpArrayHi(wav['amp_l'], BEGIN_FLAME, END_FLAME)
+#変換前
+inputArray = []
+for j in cdAmp_l : inputArray.extend(j * 5000000.0)
 
-#変換のみ実行する場合はコメントを外す
-gmm = joblib.load("gmm")    #GMMファイルの読み込み
+#print("正解振幅データを作成しています。")   #正解を見たい時のオプション
+originAmp = makeAmpArrayHi(wav['amp_l'], BEGIN_FLAME, END_FLAME)
+origin = []
+for j in originAmp : origin.extend(j * 5000000.0)
+
+gmm = joblib.load("gmm_jazz_50")    #GMMファイルの読み込み
+debug_gmm(gmm)
 
 print("Lチャネルを変換しています。")
-result_l = convertAmp(gmm, cdAmp_l, components)
-'''
-print("Rチャネルを変換しています。")
-result_r = convertAmp(gmm, cdAmp_r, components)
-#変換元
-#b = []
-#for j in cdAmp : b.extend(j * 5000000.0)
-
-#c = []
-#for j in originAmp : c.extend(j)
-
-
-result = [0] * (len(cdAmp_l)*2)
-j = 0
-for i in range(0,len(result)-1,2) : 
-    result[i] = result_l[j]
-    result[i+1] = result_r[j]
-    j+=1
-#print(result)
-'''
-
+result_l = convertAmp(gmm, cdAmp_l, 50)
+#print("Rチャネルを変換しています。")
+#result_r = convertAmp(gmm, cdAmp_r, components)
 print("\n変換が終了しました。\n")
 
 #波形の表示
-fl1 = 0
-fl2 = len(cdAmp_l)
-#plt.plot(b[fl1:fl2], label = "CD")
-plt.plot(result_l[fl1:fl2], label = "Result")
-#plt.plot(c[fl1:fl2], label = "Correct")
+fl1 = 100000
+fl2 = 150000
+plt.plot(inputArray[fl1:fl2], label = "CD")     #入力波形
+plt.plot(result_l[fl1:fl2], label = "Result")   #出力波形
+plt.plot(origin[fl1:fl2], label = "Origin")     #正解波形
 plt.legend()
 plt.title("Result")
 plt.xlabel("Time [t]")
@@ -88,4 +74,4 @@ plt.ylabel("Amplitude")
 plt.show()
 
 #結果をwavファイルに書き込み
-wavio.writewav24("out.wav", 96000, result_l)
+wavio.writewav24("result.wav", 96000, result_l)
