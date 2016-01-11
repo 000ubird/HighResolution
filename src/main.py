@@ -46,13 +46,14 @@ cdAmp_l = makeAmpArrayCD(wav['amp_l'], BEGIN_FLAME, END_FLAME)  #Lチャネル
 #変換前
 inputArray = []
 for j in cdAmp_l : inputArray.extend(j * 5000000.0)
+wavio.writewav24("input.wav", 96000, inputArray)
 
 #print("正解振幅データを作成しています。")   #正解を見たい時のオプション
-originAmp = makeAmpArrayHi(wav['amp_l'], BEGIN_FLAME, END_FLAME)
-origin = []
-for j in originAmp : origin.extend(j * 5000000.0)
+#originAmp = makeAmpArrayHi(wav['amp_l'], BEGIN_FLAME, END_FLAME)
+#origin = []
+#for j in originAmp : origin.extend(j * 5000000.0)
 
-gmm = joblib.load("gmm_jazz_50")    #GMMファイルの読み込み
+gmm = joblib.load("gmm_jazz_100")    #GMMファイルの読み込み
 debug_gmm(gmm)
 
 print("Lチャネルを変換しています。")
@@ -66,7 +67,7 @@ fl1 = 100000
 fl2 = 150000
 plt.plot(inputArray[fl1:fl2], label = "CD")     #入力波形
 plt.plot(result_l[fl1:fl2], label = "Result")   #出力波形
-plt.plot(origin[fl1:fl2], label = "Origin")     #正解波形
+#plt.plot(origin[fl1:fl2], label = "Origin")     #正解波形
 plt.legend()
 plt.title("Result")
 plt.xlabel("Time [t]")
